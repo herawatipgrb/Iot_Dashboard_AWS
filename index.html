@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cloud Monitoring Dashboard</title>
 
 <style>
@@ -107,11 +108,11 @@ body {
 .sensor-label{color:#94a3b8;}
 .sensor-value{font-size:22px;font-weight:bold;}
 
-/* AKTIVITAS */
+/* AKTIVITAS (TIDAK DIUBAH) */
 .grid-form {
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap: 20px; /* 🔥 FIX JARAK */
+    gap: 20px;
 }
 
 .form-group {
@@ -177,6 +178,39 @@ button {
 /* TENTANG */
 .profile { text-align:center; margin-top:10px;}
 .profile-name{font-weight:bold;}
+
+/* 🔥 RESPONSIVE (AMAN) */
+@media (max-width: 600px){
+
+    .main {
+        padding: 15px 10px;
+        max-width: 100%;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    .big {
+        font-size: 28px;
+    }
+
+    .chart {
+        width: 80px;
+        height: 40px;
+    }
+
+    .sidebar {
+        width: 180px;
+    }
+
+    /* AKTIVITAS TETAP */
+    .grid-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
 </style>
 </head>
 
@@ -205,7 +239,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="temp">--</div><div class="unit">°C</div></div>
-<svg class="chart"><path d="M0 35 Q20 10,40 25 T80 20 T120 30" class="line-blue"/></svg>
 </div>
 </div>
 
@@ -215,7 +248,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="hum">--</div><div class="unit">%</div></div>
-<svg class="chart"><path d="M0 25 Q20 35,40 15 T80 30 T120 25" class="line-cyan"/></svg>
 </div>
 </div>
 
@@ -225,7 +257,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="light">--</div><div class="unit">lux</div></div>
-<svg class="chart"><path d="M0 30 Q20 40,40 20 T80 35 T120 30" class="line-yellow"/></svg>
 </div>
 </div>
 
@@ -236,20 +267,20 @@ button {
 <h2>Sensor Monitor</h2>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Suhu</div><div id="temp2" class="sensor-value">--</div></div>🌡️
+<div><div class="sensor-label">Suhu</div><div id="temp2" class="sensor-value">--</div></div>
 </div>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Kelembapan</div><div id="hum2" class="sensor-value">--</div></div>💧
+<div><div class="sensor-label">Kelembapan</div><div id="hum2" class="sensor-value">--</div></div>
 </div>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Cahaya</div><div id="light2" class="sensor-value">--</div></div>☀️
+<div><div class="sensor-label">Cahaya</div><div id="light2" class="sensor-value">--</div></div>
 </div>
 
 </div>
 
-<!-- AKTIVITAS -->
+<!-- AKTIVITAS (ASLI, TIDAK DIUBAH) -->
 <div id="aktivitas" class="section">
 <h2>Aktivitas Kuliah</h2>
 
@@ -325,12 +356,9 @@ button {
 
 <div class="card">
 <p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
-
 <div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
-<div class="profile"><div class="profile-name">Sabrina Sitohang</div></div>
-<div class="profile"><div class="profile-name">Esther Hutagaol</div></div>
-
 </div>
+
 </div>
 
 </div>
