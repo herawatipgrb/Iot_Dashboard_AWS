@@ -1,196 +1,121 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cloud Monitoring Dashboard</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #0f172a;
-    color: white;
-}
-.topbar {
-    height: 60px;
-    background: #020617;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    position: fixed;
-    width: 100%;
-    top: 0;
-}
-.sidebar {
-    width: 220px;
-    height: 100%;
-    background: #020617;
-    position: fixed;
-    top: 60px;
-    left: -220px;
-    padding: 20px;
-    transition: 0.3s;
-}
-.sidebar.active { left: 0; }
-.sidebar a {
-    display: block;
-    color: #94a3b8;
-    padding: 10px;
-    border-radius: 8px;
-}
-.sidebar a:hover { background: #1e293b; color: white; }
-
-.main {
-    margin-top: 60px;
-    padding: 20px;
-    max-width: 650px;
-    margin: auto;
-}
-
-.card {
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 15px;
-}
-
-.big { font-size: 32px; font-weight: bold; }
-
-.sensor-box {
-    background:#1e293b;
-    padding:15px;
-    border-radius:10px;
-    margin-bottom:10px;
-}
-
-.list-item {
-    background:#111827;
-    padding:10px;
-    border-radius:10px;
-    margin-bottom:10px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="topbar">
-    <div onclick="toggleMenu()">☰</div>
-    <h3 style="margin-left:10px;">Dashboard</h3>
-</div>
-
-<div class="sidebar" id="sidebar">
-    <a onclick="showPage('dashboard')">Dashboard</a>
-    <a onclick="showPage('sensor')">Sensor</a>
-    <a onclick="showPage('aktivitas')">Aktivitas</a>
-</div>
-
-<div class="main">
-
-<div id="dashboard" class="section active">
-<div class="card"><div class="big" id="temp">--</div>Suhu</div>
-<div class="card"><div class="big" id="hum">--</div>Kelembapan</div>
-<div class="card"><div class="big" id="light">--</div>Cahaya</div>
-</div>
-
-<div id="sensor" class="section">
-<div class="sensor-box">Suhu: <span id="temp2">--</span></div>
-<div class="sensor-box">Hum: <span id="hum2">--</span></div>
-<div class="sensor-box">Light: <span id="light2">--</span></div>
-</div>
-
-<div id="aktivitas" class="section">
-<h3>Tambah Aktivitas</h3>
-<input id="judul" placeholder="Judul"><br>
-<input id="tanggal" type="date"><br>
-<select id="topik">
-<option>Praktikum</option>
-<option>Diskusi</option>
-</select><br>
-<button onclick="tambah()">Simpan</button>
-
-<div id="list"></div>
-</div>
-
-</div>
-
 <script>
 const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
+/* SAFE GET ELEMENT */
+function el(id){
+    return document.getElementById(id);
+}
+
+/* MENU */
 function toggleMenu(){
-document.getElementById("sidebar").classList.toggle("active");
+    el("sidebar").classList.toggle("active");
 }
 
 function showPage(p){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(p).classList.add("active");
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    el(p).classList.add("active");
 }
 
+/* SENSOR (ANTI ERROR) */
 async function getSensor(){
 try{
-const r=await fetch(API+"/sensor");
-const d=await r.json();
+    const r = await fetch(API+"/sensor");
+    const d = await r.json();
 
-if(!d || d.length===0) return;
+    if(!d || d.length === 0) return;
 
-const x=d[d.length-1];
+    const x = d[d.length-1];
 
-document.getElementById("temp").innerText=x.temperature || "--";
-document.getElementById("hum").innerText=x.humidity || "--";
-document.getElementById("light").innerText=x.light || "--";
+    if(el("temp")) el("temp").innerText = x.temperature ?? "--";
+    if(el("hum")) el("hum").innerText = x.humidity ?? "--";
+    if(el("light")) el("light").innerText = x.light ?? "--";
 
-document.getElementById("temp2").innerText=x.temperature || "--";
-document.getElementById("hum2").innerText=x.humidity || "--";
-document.getElementById("light2").innerText=x.light || "--";
+    if(el("temp2")) el("temp2").innerText = x.temperature ?? "--";
+    if(el("hum2")) el("hum2").innerText = x.humidity ?? "--";
+    if(el("light2")) el("light2").innerText = x.light ?? "--";
 
 }catch(e){
-console.log("Sensor error:", e);
+    console.log("Sensor error:", e);
 }
 }
 
+/* AKTIVITAS (ANTI ERROR) */
 async function getActivities(){
 try{
-const r=await fetch(API+"/activities");
-const d=await r.json();
+    const r = await fetch(API+"/activities");
+    const d = await r.json();
 
-let h="";
-d.forEach(a=>{
-h+=`
-<div class="list-item">
-<strong>${a.judul_aktivitas || "-"}</strong>
-<br>${a.tanggal || "-"}
-</div>`;
-});
-document.getElementById("list").innerHTML=h;
+    let h = "";
+
+    if(!Array.isArray(d)) return;
+
+    d.forEach(a=>{
+        h += `
+        <div class="list-item">
+            <strong>${a.judul || "-"}</strong><br>
+            <small>${a.tanggal || "-"}</small><br>
+
+            <div style="color:#22c55e;font-size:12px">
+                ${a.kategori || "Umum"}
+            </div>
+
+            <div style="font-size:12px;color:#94a3b8">
+                Pertemuan: ${a.pertemuan || "-"} <br>
+                Dosen: ${a.dosen || "-"}
+            </div>
+
+            <div style="margin-top:5px;font-size:12px">
+                ${a.deskripsi || ""}
+            </div>
+        </div>
+        `;
+    });
+
+    if(el("list")) el("list").innerHTML = h;
 
 }catch(e){
-console.log("Activity error:", e);
+    console.log("Aktivitas error:", e);
 }
 }
 
+/* SIMPAN */
 async function tambah(){
 try{
-await fetch(API+"/activities",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-id:Date.now().toString(),
-judul_aktivitas:document.getElementById("judul").value,
-tanggal:document.getElementById("tanggal").value,
-kategori:document.getElementById("topik").value
-})
-});
-alert("Tersimpan");
-getActivities();
+    await fetch(API+"/activities",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            judul: el("judul").value,
+            tanggal: el("tanggal").value,
+            kategori: el("topik").value || "Umum",
+            pertemuan: el("pertemuan").value,
+            dosen: el("dosen").value,
+            deskripsi: el("deskripsi").value,
+            materi: el("materi").value,
+            catatan: el("catatan").value
+        })
+    });
+
+    alert("Tersimpan");
+    resetForm();
+    getActivities();
+
 }catch(e){
-console.log(e);
+    alert("Gagal simpan!");
+    console.log(e);
 }
 }
 
+/* RESET */
+function resetForm(){
+    document.querySelectorAll("input,textarea").forEach(i=>i.value="");
+    if(el("topik")) el("topik").value="";
+}
+
+/* INIT */
 getSensor();
 getActivities();
-setInterval(getSensor,3000);
-</script>
 
-</body>
-</html>
+setInterval(getSensor,3000);
+setInterval(getActivities,5000);
+</script>
