@@ -8,12 +8,14 @@ function el(id){
 
 /* MENU */
 function toggleMenu(){
-    el("sidebar").classList.toggle("active");
+    const sb = el("sidebar");
+    if(sb) sb.classList.toggle("active");
 }
 
 function showPage(p){
     document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-    el(p).classList.add("active");
+    const page = el(p);
+    if(page) page.classList.add("active");
 }
 
 /* SENSOR (ANTI ERROR) */
@@ -26,20 +28,20 @@ try{
 
     const x=d[d.length-1];
 
-    if(el("temp")) el("temp").innerText=x.temperature ?? "--";
-    if(el("hum")) el("hum").innerText=x.humidity ?? "--";
-    if(el("light")) el("light").innerText=x.light ?? "--";
+    if(el("temp")) el("temp").innerText = x.temperature ?? "--";
+    if(el("hum")) el("hum").innerText = x.humidity ?? "--";
+    if(el("light")) el("light").innerText = x.light ?? "--";
 
-    if(el("temp2")) el("temp2").innerText=x.temperature ?? "--";
-    if(el("hum2")) el("hum2").innerText=x.humidity ?? "--";
-    if(el("light2")) el("light2").innerText=x.light ?? "--";
+    if(el("temp2")) el("temp2").innerText = x.temperature ?? "--";
+    if(el("hum2")) el("hum2").innerText = x.humidity ?? "--";
+    if(el("light2")) el("light2").innerText = x.light ?? "--";
 
 }catch(e){
     console.log("Sensor error:",e);
 }
 }
 
-/* AKTIVITAS (FIX ERROR PUTIH DI SINI) */
+/* AKTIVITAS (ANTI ERROR) */
 async function getActivities(){
 try{
     const r=await fetch(API+"/activities");
@@ -50,7 +52,7 @@ try{
     let h="";
 
     d.forEach(a=>{
-        h+=`
+        h += `
         <div class="list-item">
             <strong>${a.judul || "-"}</strong><br>
             <small>${a.tanggal || "-"}</small><br>
@@ -61,7 +63,8 @@ try{
         `;
     });
 
-    if(el("list")) el("list").innerHTML=h;
+    const listEl = el("list");
+    if(listEl) listEl.innerHTML = h;
 
 }catch(e){
     console.log("Aktivitas error:",e);
@@ -71,13 +74,17 @@ try{
 /* SIMPAN */
 async function tambah(){
 try{
+    const judulEl = el("judul");
+    const tanggalEl = el("tanggal");
+    const topikEl = el("topik");
+
     await fetch(API+"/activities",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
-            judul: el("judul").value,
-            tanggal: el("tanggal").value,
-            kategori: el("topik").value || "Umum"
+            judul: judulEl ? judulEl.value : "",
+            tanggal: tanggalEl ? tanggalEl.value : "",
+            kategori: topikEl ? (topikEl.value || "Umum") : "Umum"
         })
     });
 
@@ -94,6 +101,8 @@ try{
 /* RESET */
 function resetForm(){
     document.querySelectorAll("input,textarea").forEach(i=>i.value="");
+    const topikEl = el("topik");
+    if(topikEl) topikEl.value="";
 }
 
 /* INIT */
