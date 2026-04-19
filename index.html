@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cloud Monitoring Dashboard</title>
 
 <style>
@@ -21,6 +22,7 @@ body {
     position: fixed;
     width: 100%;
     top: 0;
+    z-index: 999;
 }
 
 /* SIDEBAR */
@@ -48,8 +50,8 @@ body {
 /* MAIN */
 .main {
     margin-top: 60px;
-    padding: 25px 20px;
-    max-width: 650px;
+    padding: 20px;
+    max-width: 700px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -62,8 +64,8 @@ body {
 .card {
     background: linear-gradient(145deg, #1e293b, #111827);
     border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 18px;
+    padding: 20px;
+    margin-bottom: 15px;
 }
 
 /* DASHBOARD */
@@ -85,20 +87,13 @@ body {
     align-items: center;
 }
 
-.big { font-size: 42px; font-weight: bold; }
+.big { font-size: 36px; font-weight: bold; }
 .unit { font-size: 14px; color: #94a3b8; }
-
-.chart { width:120px;height:50px;}
-.chart path{fill:none;stroke-width:3;}
-.line-blue{stroke:#3b82f6;}
-.line-cyan{stroke:#06b6d4;}
-.line-yellow{stroke:#f59e0b;}
 
 /* SENSOR */
 .sensor-box {
     display:flex;
     justify-content:space-between;
-    align-items:center;
     background:#1e293b;
     padding:15px;
     border-radius:15px;
@@ -113,13 +108,20 @@ body {
 }
 
 .form-group {
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group.full { grid-column: span 2; }
 
-input, textarea, select {
+.form-group label {
+    font-size:12px;
+    color:#94a3b8;
+}
+
+.form-group input,
+.form-group textarea,
+select {
     padding:10px;
     border-radius:10px;
     border:none;
@@ -139,10 +141,10 @@ button {
     border-radius:10px;
     cursor:pointer;
 }
-
 .btn-save{background:#22c55e;color:white;}
 .btn-cancel{background:red;color:white;}
 
+/* LIST */
 .list-item {
     background:#111827;
     padding:12px;
@@ -150,9 +152,11 @@ button {
     margin-bottom:10px;
 }
 
-/* TENTANG */
-.profile { text-align:center; margin-top:10px;}
-.profile-name{font-weight:bold;}
+/* RESPONSIVE HP */
+@media (max-width:600px){
+    .grid-form { grid-template-columns:1fr; }
+    .big { font-size:28px; }
+}
 </style>
 </head>
 
@@ -181,7 +185,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="temp">--</div><div class="unit">°C</div></div>
-<svg class="chart"><path d="M0 35 Q20 10,40 25 T80 20 T120 30" class="line-blue"/></svg>
 </div>
 </div>
 
@@ -191,7 +194,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="hum">--</div><div class="unit">%</div></div>
-<svg class="chart"><path d="M0 25 Q20 35,40 15 T80 30 T120 25" class="line-cyan"/></svg>
 </div>
 </div>
 
@@ -201,7 +203,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="light">--</div><div class="unit">lux</div></div>
-<svg class="chart"><path d="M0 30 Q20 40,40 20 T80 35 T120 30" class="line-yellow"/></svg>
 </div>
 </div>
 
@@ -214,7 +215,6 @@ button {
 <div class="sensor-box">Suhu: <span id="temp2">--</span></div>
 <div class="sensor-box">Kelembapan: <span id="hum2">--</span></div>
 <div class="sensor-box">Cahaya: <span id="light2">--</span></div>
-
 </div>
 
 <!-- AKTIVITAS -->
@@ -222,6 +222,7 @@ button {
 <h2>Aktivitas Kuliah</h2>
 
 <div class="card">
+
 <div class="grid-form">
 
 <div class="form-group">
@@ -234,7 +235,7 @@ button {
 <input id="tanggal" type="date">
 </div>
 
-<div class="form-group full">
+<div class="form-group">
 <label>Topik</label>
 <select id="topik">
 <option>Praktikum</option>
@@ -250,6 +251,7 @@ button {
 <button class="btn-cancel" onclick="resetForm()">Batal</button>
 <button class="btn-save" onclick="tambah()">Simpan</button>
 </div>
+
 </div>
 
 <div class="card">
@@ -263,13 +265,12 @@ button {
 <h2>Tentang</h2>
 
 <div class="card">
-<p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
-
-<div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
-<div class="profile"><div class="profile-name">Sabrina Sitohang</div></div>
-<div class="profile"><div class="profile-name">Esther Hutagaol</div></div>
-
+<p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud</p>
+<div style="text-align:center;">Herawati Syalomita Pangaribuan</div>
+<div style="text-align:center;">Sabrina Sitohang</div>
+<div style="text-align:center;">Esther Hutagaol</div>
 </div>
+
 </div>
 
 </div>
@@ -277,13 +278,16 @@ button {
 <script>
 const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-function toggleMenu(){sidebar.classList.toggle("active");}
+function toggleMenu(){
+document.getElementById("sidebar").classList.toggle("active");
+}
 
 function showPage(p){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById(p).classList.add("active");
 }
 
+/* SENSOR */
 async function getSensor(){
 const r=await fetch(API+"/sensor");
 const d=await r.json();
@@ -298,26 +302,25 @@ hum2.innerText=x.humidity;
 light2.innerText=x.light;
 }
 
+/* AKTIVITAS (FIX) */
 async function getActivities(){
 const r=await fetch(API+"/activities");
 const d=await r.json();
-
-if(!d.length){
-list.innerHTML="Belum ada aktivitas";
-return;
-}
 
 let h="";
 d.forEach(a=>{
 h+=`
 <div class="list-item">
 <strong>${a.judul}</strong><br>
-<span>${a.tanggal}</span><br>
-<div style="color:#22c55e;font-size:12px">${a.kategori || "Umum"}</div>
+<span>${a.tanggal}</span>
+<div style="color:#22c55e;font-size:12px">
+${a.kategori || "Umum"}
+</div>
 </div>
 `;
 });
-list.innerHTML=h;
+
+document.getElementById("list").innerHTML=h;
 }
 
 async function tambah(){
@@ -327,7 +330,7 @@ headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 judul:judul.value,
 tanggal:tanggal.value,
-kategori:topik.value || "Umum"
+kategori:topik.value
 })
 });
 alert("Tersimpan");
@@ -339,9 +342,11 @@ function resetForm(){
 document.querySelectorAll("input,textarea").forEach(i=>i.value="");
 }
 
+/* INIT */
 getSensor();
 getActivities();
 setInterval(getSensor,3000);
+setInterval(getActivities,5000);
 </script>
 
 </body>
