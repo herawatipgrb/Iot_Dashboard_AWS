@@ -11,7 +11,7 @@ body {
     color: white;
 }
 
-/* TOPBAR */
+/* ===== TOPBAR ===== */
 .topbar {
     height: 60px;
     background: #020617;
@@ -24,7 +24,15 @@ body {
     z-index: 999;
 }
 
-/* SIDEBAR */
+/* HAMBURGER */
+.menu-btn {
+    font-size: 26px;
+    cursor: pointer;
+    color: white;
+    margin-right: 15px;
+}
+
+/* ===== SIDEBAR ===== */
 .sidebar {
     width: 220px;
     height: 100%;
@@ -35,369 +43,269 @@ body {
     padding: 20px;
     transition: 0.3s;
 }
-.sidebar.active { left: 0; }
+
+.sidebar.active {
+    left: 0;
+}
 
 .sidebar a {
     display: block;
     color: #94a3b8;
+    text-decoration: none;
     padding: 10px;
     border-radius: 8px;
-    text-decoration: none;
+    margin-bottom: 10px;
 }
-.sidebar a:hover { background: #1e293b; color: white; }
 
-/* MAIN */
+.sidebar a:hover {
+    background: #1e293b;
+    color: white;
+}
+
+/* ===== MAIN ===== */
 .main {
-    margin-top: 60px;
-    padding: 25px 20px;
-    max-width: 650px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top: 70px;
+    padding: 20px;
 }
 
 /* SECTION */
-.section { display: none; }
-.section.active { display: block; }
+.section {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.section.active {
+    display: block;
+}
+
+/* ANIMASI */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
+}
 
 /* CARD */
 .card {
-    background: linear-gradient(145deg, #1e293b, #111827);
+    background: #1e293b;
+    padding: 20px;
     border-radius: 20px;
-    padding: 25px;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
-/* DASHBOARD */
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: #94a3b8;
-}
-.tag { padding:3px 8px; border-radius:6px; font-size:10px;}
-.tag.blue{background:#1e40af;}
-.tag.cyan{background:#0891b2;}
-.tag.yellow{background:#b45309;}
-
-.card-body {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.big { font-size: 42px; font-weight: bold; }
-.unit { font-size: 14px; color: #94a3b8; }
-
-.chart { width:120px;height:50px;}
-.chart path{fill:none;stroke-width:3;}
-.line-blue{stroke:#3b82f6;}
-.line-cyan{stroke:#06b6d4;}
-.line-yellow{stroke:#f59e0b;}
-
-/* SENSOR */
-.sensor-box {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#1e293b;
-    padding:15px;
-    border-radius:15px;
-    margin-bottom:10px;
-}
-.sensor-label{color:#94a3b8;}
-.sensor-value{font-size:22px;font-weight:bold;}
-
-/* AKTIVITAS */
-.grid-form {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap: 20px; /* 🔥 FIX JARAK */
-}
-
-.form-group {
+/* GRID JADI KE BAWAH */
+.grid {
     display: flex;
     flex-direction: column;
+    gap: 15px;
 }
 
-.form-group.full { grid-column: span 2; }
-
-.form-group label {
-    font-size:12px;
-    color:#94a3b8;
-    margin-bottom:4px;
+.value {
+    font-size: 28px;
 }
 
-.form-group input,
-.form-group textarea,
-select {
-    width:100%;
-    padding:10px;
-    border-radius:10px;
-    border:none;
-    background:#0f172a;
-    color:white;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-select:focus {
-    outline:none;
-    box-shadow:0 0 8px rgba(59,130,246,0.5);
-}
-
-.hint {
-    font-size:11px;
-    color:#64748b;
-}
-
-/* BUTTON */
-.btn-group {
-    display:flex;
-    gap:10px;
-    margin-top:10px;
+/* FORM */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: none;
 }
 
 button {
-    padding:10px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-}
-.btn-save{background:#22c55e;color:white;}
-.btn-cancel{background:red;color:white;}
-
-/* LIST */
-.list-item {
-    background:#111827;
-    padding:12px;
-    border-radius:12px;
-    margin-bottom:10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
 }
 
-/* TENTANG */
-.profile { text-align:center; margin-top:10px;}
-.profile-name{font-weight:bold;}
+.btn-save {
+    background: #22c55e;
+    color: white;
+}
+
+.btn-cancel {
+    background: red;
+    color: white;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+    .grid {
+        flex-direction: column;
+    }
+}
 </style>
+
 </head>
 
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
-    <div onclick="toggleMenu()">☰</div>
-    <h3 style="margin-left:10px;">Dashboard</h3>
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    <h3>Cloud Monitoring</h3>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-    <a onclick="showPage('dashboard')">Dashboard</a>
-    <a onclick="showPage('sensor')">Sensor Monitor</a>
-    <a onclick="showPage('aktivitas')">Aktivitas Kuliah</a>
-    <a onclick="showPage('tentang')">Tentang</a>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('sensor')">Sensor Monitor</a>
+    <a href="#" onclick="showPage('aktivitas')">Aktivitas Kuliah</a>
+    <a href="#" onclick="showPage('tentang')">Tentang</a>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="section active">
+    <h2>Dashboard</h2>
 
-<div class="card">
-<div class="card-header">
-<span>SUHU</span><span class="tag blue">DHT22</span>
-</div>
-<div class="card-body">
-<div><div class="big" id="temp">--</div><div class="unit">°C</div></div>
-<svg class="chart"><path d="M0 35 Q20 10,40 25 T80 20 T120 30" class="line-blue"/></svg>
-</div>
-</div>
+    <div class="grid">
+        <div class="card">
+            <h3>Suhu</h3>
+            <div class="value" id="temp">-- °C</div>
+        </div>
 
-<div class="card">
-<div class="card-header">
-<span>KELEMBAPAN</span><span class="tag cyan">DHT22</span>
-</div>
-<div class="card-body">
-<div><div class="big" id="hum">--</div><div class="unit">%</div></div>
-<svg class="chart"><path d="M0 25 Q20 35,40 15 T80 30 T120 25" class="line-cyan"/></svg>
-</div>
-</div>
+        <div class="card">
+            <h3>Kelembapan</h3>
+            <div class="value" id="hum">-- %</div>
+        </div>
 
-<div class="card">
-<div class="card-header">
-<span>CAHAYA</span><span class="tag yellow">BH1750</span>
-</div>
-<div class="card-body">
-<div><div class="big" id="light">--</div><div class="unit">lux</div></div>
-<svg class="chart"><path d="M0 30 Q20 40,40 20 T80 35 T120 30" class="line-yellow"/></svg>
-</div>
+        <div class="card">
+            <h3>Cahaya</h3>
+            <div class="value" id="light">-- lux</div>
+        </div>
+    </div>
 </div>
 
-</div>
-
-<!-- SENSOR -->
+<!-- SENSOR ONLY -->
 <div id="sensor" class="section">
-<h2>Sensor Monitor</h2>
+    <h2>Sensor Monitor</h2>
 
-<div class="sensor-box">
-<div><div class="sensor-label">Suhu</div><div id="temp2" class="sensor-value">--</div></div>🌡️
-</div>
-
-<div class="sensor-box">
-<div><div class="sensor-label">Kelembapan</div><div id="hum2" class="sensor-value">--</div></div>💧
-</div>
-
-<div class="sensor-box">
-<div><div class="sensor-label">Cahaya</div><div id="light2" class="sensor-value">--</div></div>☀️
-</div>
-
+    <div class="card">
+        <p>Suhu: <span id="temp2">--</span></p>
+        <p>Kelembapan: <span id="hum2">--</span></p>
+        <p>Cahaya: <span id="light2">--</span></p>
+    </div>
 </div>
 
 <!-- AKTIVITAS -->
 <div id="aktivitas" class="section">
-<h2>Aktivitas Kuliah</h2>
+    <h2>Aktivitas Kuliah</h2>
 
-<div class="card">
+    <div class="card">
+        <input id="judul" placeholder="Judul Aktivitas">
+        <input id="tanggal" type="date">
+        <input id="pertemuan" placeholder="Pertemuan Ke">
+        <input id="topik" placeholder="Topik">
+        <input id="dosen" placeholder="Dosen">
+        <textarea id="deskripsi" placeholder="Deskripsi"></textarea>
+        <textarea id="materi" placeholder="Materi"></textarea>
+        <textarea id="catatan" placeholder="Catatan"></textarea>
 
-<div class="grid-form">
+        <button class="btn-cancel" onclick="resetForm()">Batal</button>
+        <button class="btn-save" onclick="tambah()">Simpan</button>
+    </div>
 
-<div class="form-group">
-<label>Judul Aktivitas</label>
-<input id="judul">
-</div>
-
-<div class="form-group">
-<label>Tanggal</label>
-<input id="tanggal" type="date">
-<span class="hint">Pilih tanggal kegiatan</span>
-</div>
-
-<div class="form-group">
-<label>Pertemuan Ke</label>
-<input id="pertemuan">
-</div>
-
-<div class="form-group">
-<label>Topik</label>
-<select id="topik">
-<option value="">Pilih Topik</option>
-<option>Praktikum</option>
-<option>Diskusi</option>
-<option>Materi</option>
-<option>Tugas</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>Dosen</label>
-<input id="dosen">
-</div>
-
-<div class="form-group full">
-<label>Deskripsi</label>
-<textarea id="deskripsi"></textarea>
-</div>
-
-<div class="form-group full">
-<label>Materi</label>
-<textarea id="materi"></textarea>
-</div>
-
-<div class="form-group full">
-<label>Catatan</label>
-<textarea id="catatan"></textarea>
-</div>
-
-</div>
-
-<div class="btn-group">
-<button class="btn-cancel" onclick="resetForm()">Batal</button>
-<button class="btn-save" onclick="tambah()">Simpan</button>
-</div>
-
-</div>
-
-<div class="card">
-<div id="list"></div>
-</div>
-
+    <div class="card">
+        <ul id="list"></ul>
+    </div>
 </div>
 
 <!-- TENTANG -->
 <div id="tentang" class="section">
-<h2>Tentang</h2>
-
-<div class="card">
-<p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
-
-<div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
-<div class="profile"><div class="profile-name">Sabrina Sitohang</div></div>
-<div class="profile"><div class="profile-name">Esther Hutagaol</div></div>
-
-</div>
+    <h2>Tentang</h2>
+    <div class="card">
+        <p>Dashboard Monitoring IoT berbasis Cloud & AWS</p>
+    </div>
 </div>
 
 </div>
 
 <script>
-const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-function toggleMenu(){sidebar.classList.toggle("active");}
+const API = "https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-function showPage(p){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(p).classList.add("active");
+/* MENU */
+function toggleMenu(){
+    document.getElementById("sidebar").classList.toggle("active");
 }
 
+/* NAVIGATION */
+function showPage(page){
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.getElementById(page).classList.add("active");
+}
+
+/* SENSOR */
 async function getSensor(){
-const r=await fetch(API+"/sensor");
-const d=await r.json();
-const x=d[d.length-1];
+    try{
+        const res = await fetch(API + "/sensor");
+        const data = await res.json();
+        const last = data[data.length - 1];
 
-temp.innerText=x.temperature;
-hum.innerText=x.humidity;
-light.innerText=x.light;
+        temp.innerText = last.temperature + " °C";
+        hum.innerText = last.humidity + " %";
+        light.innerText = last.light + " lux";
 
-temp2.innerText=x.temperature;
-hum2.innerText=x.humidity;
-light2.innerText=x.light;
+        temp2.innerText = last.temperature;
+        hum2.innerText = last.humidity;
+        light2.innerText = last.light;
+
+    }catch{
+        temp.innerText = "Error";
+        hum.innerText = "Error";
+        light.innerText = "Error";
+    }
 }
 
+/* GET AKTIVITAS */
 async function getActivities(){
-const r=await fetch(API+"/activities");
-const d=await r.json();
+    try{
+        const res = await fetch(API + "/activities");
+        const data = await res.json();
 
-let h="";
-d.forEach(a=>{
-h+=`
-<div class="list-item">
-<strong>${a.judul}</strong>
-<span>${a.tanggal}</span>
-<div style="color:#22c55e;font-size:12px">${a.kategori || "Umum"}</div>
-</div>
-`;
-});
-list.innerHTML=h;
+        let html = "";
+        data.forEach(a=>{
+            html += `<li>${a.judul} - ${a.tanggal}</li>`;
+        });
+
+        list.innerHTML = html;
+
+    }catch{}
 }
 
+/* TAMBAH */
 async function tambah(){
-await fetch(API+"/activities",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-judul:judul.value,
-tanggal:tanggal.value,
-kategori:topik.value || "Umum"
-})
-});
-alert("Tersimpan");
-resetForm();
-getActivities();
+    const data = {
+        judul: judul.value,
+        tanggal: tanggal.value,
+        kategori: topik.value
+    };
+
+    await fetch(API + "/activities", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    });
+
+    alert("Tersimpan");
+    resetForm();
+    getActivities();
 }
 
+/* RESET */
 function resetForm(){
-document.querySelectorAll("input,textarea").forEach(i=>i.value="");
+    document.querySelectorAll("input, textarea").forEach(i=>i.value="");
 }
 
+/* AUTO */
 getSensor();
 getActivities();
 setInterval(getSensor,3000);
+
 </script>
 
 </body>
