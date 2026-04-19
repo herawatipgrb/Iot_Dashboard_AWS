@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cloud Monitoring Dashboard</title>
 
 <style>
@@ -107,18 +108,13 @@ body {
 .sensor-label{color:#94a3b8;}
 .sensor-value{font-size:22px;font-weight:bold;}
 
-/* AKTIVITAS */
+/* FORM */
 .grid-form {
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap: 20px; /* 🔥 FIX JARAK */
+    gap:20px;
 }
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
+.form-group { display:flex; flex-direction:column; }
 .form-group.full { grid-column: span 2; }
 
 .form-group label {
@@ -138,25 +134,12 @@ select {
     color:white;
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-select:focus {
-    outline:none;
-    box-shadow:0 0 8px rgba(59,130,246,0.5);
-}
-
-.hint {
-    font-size:11px;
-    color:#64748b;
-}
-
 /* BUTTON */
 .btn-group {
     display:flex;
     gap:10px;
     margin-top:10px;
 }
-
 button {
     padding:10px;
     border:none;
@@ -174,9 +157,20 @@ button {
     margin-bottom:10px;
 }
 
-/* TENTANG */
+/* PROFILE */
 .profile { text-align:center; margin-top:10px;}
 .profile-name{font-weight:bold;}
+
+/* 🔥 RESPONSIVE */
+@media (max-width: 600px){
+    .main { padding:15px 10px; max-width:100%; }
+    .card { padding:15px; border-radius:15px; }
+    .big { font-size:28px; }
+    .chart { width:80px; height:40px; }
+    .sidebar { width:180px; }
+    .grid-form { grid-template-columns:1fr; }
+    .form-group.full { grid-column: span 1; }
+}
 </style>
 </head>
 
@@ -190,7 +184,7 @@ button {
 <div class="sidebar" id="sidebar">
     <a onclick="showPage('dashboard')">Dashboard</a>
     <a onclick="showPage('sensor')">Sensor Monitor</a>
-    <a onclick="showPage('aktivitas')">Aktivitas Kuliah</a>
+    <a onclick="showPage('aktivitas')">Aktivitas</a>
     <a onclick="showPage('tentang')">Tentang</a>
 </div>
 
@@ -251,32 +245,25 @@ button {
 
 <!-- AKTIVITAS -->
 <div id="aktivitas" class="section">
-<h2>Aktivitas Kuliah</h2>
+<h2>Aktivitas</h2>
 
 <div class="card">
-
 <div class="grid-form">
 
 <div class="form-group">
-<label>Judul Aktivitas</label>
+<label>Judul</label>
 <input id="judul">
 </div>
 
 <div class="form-group">
 <label>Tanggal</label>
 <input id="tanggal" type="date">
-<span class="hint">Pilih tanggal kegiatan</span>
 </div>
 
 <div class="form-group">
-<label>Pertemuan Ke</label>
-<input id="pertemuan">
-</div>
-
-<div class="form-group">
-<label>Topik</label>
+<label>Kategori</label>
 <select id="topik">
-<option value="">Pilih Topik</option>
+<option value="">Pilih</option>
 <option>Praktikum</option>
 <option>Diskusi</option>
 <option>Materi</option>
@@ -284,24 +271,9 @@ button {
 </select>
 </div>
 
-<div class="form-group">
-<label>Dosen</label>
-<input id="dosen">
-</div>
-
 <div class="form-group full">
 <label>Deskripsi</label>
 <textarea id="deskripsi"></textarea>
-</div>
-
-<div class="form-group full">
-<label>Materi</label>
-<textarea id="materi"></textarea>
-</div>
-
-<div class="form-group full">
-<label>Catatan</label>
-<textarea id="catatan"></textarea>
 </div>
 
 </div>
@@ -310,7 +282,6 @@ button {
 <button class="btn-cancel" onclick="resetForm()">Batal</button>
 <button class="btn-save" onclick="tambah()">Simpan</button>
 </div>
-
 </div>
 
 <div class="card">
@@ -324,7 +295,7 @@ button {
 <h2>Tentang</h2>
 
 <div class="card">
-<p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
+<p style="text-align:center;">Dashboard Monitoring IoT berbasis AWS</p>
 
 <div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
 <div class="profile"><div class="profile-name">Sabrina Sitohang</div></div>
@@ -365,13 +336,7 @@ const d=await r.json();
 
 let h="";
 d.forEach(a=>{
-h+=`
-<div class="list-item">
-<strong>${a.judul}</strong>
-<span>${a.tanggal}</span>
-<div style="color:#22c55e;font-size:12px">${a.kategori || "Umum"}</div>
-</div>
-`;
+h+=`<div class="list-item"><strong>${a.judul}</strong> - ${a.tanggal}</div>`;
 });
 list.innerHTML=h;
 }
