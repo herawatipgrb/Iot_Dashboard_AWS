@@ -1,94 +1,96 @@
 <script>
 const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-/* AMANIN ELEMENT */
+/* SAFE ELEMENT */
 function el(id){
     return document.getElementById(id);
 }
 
 /* MENU */
 function toggleMenu(){
-    el("sidebar").classList.toggle("active");
+    const s = el("sidebar");
+    if(s) s.classList.toggle("active");
 }
 
 function showPage(p){
     document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-    el(p).classList.add("active");
+    const page = el(p);
+    if(page) page.classList.add("active");
 }
 
-/* SENSOR (ANTI ERROR) */
+/* SENSOR */
 async function getSensor(){
-try{
-    const r=await fetch(API+"/sensor");
-    const d=await r.json();
+    try{
+        const r = await fetch(API+"/sensor");
+        const d = await r.json();
 
-    if(!d || d.length===0) return;
+        if(!Array.isArray(d) || d.length === 0) return;
 
-    const x=d[d.length-1];
+        const x = d[d.length-1];
 
-    if(el("temp")) el("temp").innerText=x.temperature ?? "--";
-    if(el("hum")) el("hum").innerText=x.humidity ?? "--";
-    if(el("light")) el("light").innerText=x.light ?? "--";
+        if(el("temp")) el("temp").innerText = x.temperature || "--";
+        if(el("hum")) el("hum").innerText = x.humidity || "--";
+        if(el("light")) el("light").innerText = x.light || "--";
 
-    if(el("temp2")) el("temp2").innerText=x.temperature ?? "--";
-    if(el("hum2")) el("hum2").innerText=x.humidity ?? "--";
-    if(el("light2")) el("light2").innerText=x.light ?? "--";
+        if(el("temp2")) el("temp2").innerText = x.temperature || "--";
+        if(el("hum2")) el("hum2").innerText = x.humidity || "--";
+        if(el("light2")) el("light2").innerText = x.light || "--";
 
-}catch(e){
-    console.log("Sensor error:",e);
+    }catch(e){
+        console.log("Sensor error:", e);
+    }
 }
-}
 
-/* AKTIVITAS (FIX ERROR PUTIH DI SINI) */
+/* AKTIVITAS */
 async function getActivities(){
-try{
-    const r=await fetch(API+"/activities");
-    const d=await r.json();
+    try{
+        const r = await fetch(API+"/activities");
+        const d = await r.json();
 
-    if(!Array.isArray(d)) return;
+        if(!Array.isArray(d)) return;
 
-    let h="";
+        let html = "";
 
-    d.forEach(a=>{
-        h+=`
-        <div class="list-item">
-            <strong>${a.judul || "-"}</strong><br>
-            <small>${a.tanggal || "-"}</small><br>
-            <div style="color:#22c55e;font-size:12px">
-                ${a.kategori || "Umum"}
-            </div>
-        </div>
-        `;
-    });
+        d.forEach(a=>{
+            html += `
+            <div class="list-item">
+                <strong>${a.judul || "-"}</strong><br>
+                <small>${a.tanggal || "-"}</small><br>
+                <div style="color:#22c55e;font-size:12px">
+                    ${a.kategori || "Umum"}
+                </div>
+            </div>`;
+        });
 
-    if(el("list")) el("list").innerHTML=h;
+        const list = el("list");
+        if(list) list.innerHTML = html;
 
-}catch(e){
-    console.log("Aktivitas error:",e);
-}
+    }catch(e){
+        console.log("Aktivitas error:", e);
+    }
 }
 
 /* SIMPAN */
 async function tambah(){
-try{
-    await fetch(API+"/activities",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-            judul: el("judul").value,
-            tanggal: el("tanggal").value,
-            kategori: el("topik").value || "Umum"
-        })
-    });
+    try{
+        await fetch(API+"/activities",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+                judul: el("judul")?.value || "",
+                tanggal: el("tanggal")?.value || "",
+                kategori: el("topik")?.value || "Umum"
+            })
+        });
 
-    alert("Tersimpan");
-    resetForm();
-    getActivities();
+        alert("Tersimpan");
+        resetForm();
+        getActivities();
 
-}catch(e){
-    alert("Gagal simpan");
-    console.log(e);
-}
+    }catch(e){
+        alert("Gagal simpan");
+        console.log(e);
+    }
 }
 
 /* RESET */
@@ -96,9 +98,11 @@ function resetForm(){
     document.querySelectorAll("input,textarea").forEach(i=>i.value="");
 }
 
-/* INIT */
-getSensor();
-getActivities();
+/* INIT (PALING AMAN) */
+document.addEventListener("DOMContentLoaded", function(){
+    getSensor();
+    getActivities();
 
-setInterval(getSensor,3000);
+    setInterval(getSensor,3000);
+});
 </script>
