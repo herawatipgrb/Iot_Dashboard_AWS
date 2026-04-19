@@ -11,6 +11,8 @@ body {
     background: #0f172a;
     color: white;
 }
+
+/* TOPBAR */
 .topbar {
     height: 60px;
     background: #020617;
@@ -21,6 +23,8 @@ body {
     width: 100%;
     top: 0;
 }
+
+/* SIDEBAR */
 .sidebar {
     width: 220px;
     height: 100%;
@@ -32,14 +36,17 @@ body {
     transition: 0.3s;
 }
 .sidebar.active { left: 0; }
+
 .sidebar a {
     display: block;
     color: #94a3b8;
     padding: 10px;
     border-radius: 8px;
+    cursor: pointer;
 }
 .sidebar a:hover { background: #1e293b; color: white; }
 
+/* MAIN */
 .main {
     margin-top: 60px;
     padding: 20px;
@@ -47,6 +54,11 @@ body {
     margin: auto;
 }
 
+/* SECTION */
+.section { display: none; }
+.section.active { display: block; }
+
+/* CARD */
 .card {
     background: #1e293b;
     padding: 20px;
@@ -54,8 +66,10 @@ body {
     margin-bottom: 15px;
 }
 
+/* TEXT */
 .big { font-size: 32px; font-weight: bold; }
 
+/* SENSOR */
 .sensor-box {
     background:#1e293b;
     padding:15px;
@@ -63,6 +77,7 @@ body {
     margin-bottom:10px;
 }
 
+/* LIST */
 .list-item {
     background:#111827;
     padding:10px;
@@ -74,42 +89,73 @@ body {
 
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
     <div onclick="toggleMenu()">☰</div>
     <h3 style="margin-left:10px;">Dashboard</h3>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
     <a onclick="showPage('dashboard')">Dashboard</a>
-    <a onclick="showPage('sensor')">Sensor</a>
-    <a onclick="showPage('aktivitas')">Aktivitas</a>
+    <a onclick="showPage('sensor')">Sensor Monitor</a>
+    <a onclick="showPage('aktivitas')">Aktivitas Kuliah</a>
+    <a onclick="showPage('tentang')">Tentang</a>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
+<!-- DASHBOARD -->
 <div id="dashboard" class="section active">
-<div class="card"><div class="big" id="temp">--</div>Suhu</div>
-<div class="card"><div class="big" id="hum">--</div>Kelembapan</div>
-<div class="card"><div class="big" id="light">--</div>Cahaya</div>
+<div class="card"><div class="big" id="temp">--</div>Suhu (°C)</div>
+<div class="card"><div class="big" id="hum">--</div>Kelembapan (%)</div>
+<div class="card"><div class="big" id="light">--</div>Cahaya (lux)</div>
 </div>
 
+<!-- SENSOR -->
 <div id="sensor" class="section">
+<h3>Sensor Monitor</h3>
 <div class="sensor-box">Suhu: <span id="temp2">--</span></div>
-<div class="sensor-box">Hum: <span id="hum2">--</span></div>
-<div class="sensor-box">Light: <span id="light2">--</span></div>
+<div class="sensor-box">Kelembapan: <span id="hum2">--</span></div>
+<div class="sensor-box">Cahaya: <span id="light2">--</span></div>
 </div>
 
+<!-- AKTIVITAS -->
 <div id="aktivitas" class="section">
 <h3>Tambah Aktivitas</h3>
-<input id="judul" placeholder="Judul"><br>
-<input id="tanggal" type="date"><br>
+
+<input id="judul" placeholder="Judul"><br><br>
+<input id="tanggal" type="date"><br><br>
+
 <select id="topik">
+<option value="">Pilih Kategori</option>
 <option>Praktikum</option>
 <option>Diskusi</option>
-</select><br>
+<option>Materi</option>
+<option>Tugas</option>
+</select><br><br>
+
 <button onclick="tambah()">Simpan</button>
 
+<h3>Daftar Aktivitas</h3>
 <div id="list"></div>
+</div>
+
+<!-- TENTANG -->
+<div id="tentang" class="section">
+<h3>Tentang</h3>
+
+<div class="card">
+<p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
+
+<div style="text-align:center; margin-top:15px; line-height:1.8;">
+👩‍💻 Herawati Syalomita Pangaribuan <br>
+👩‍💻 Sabrina Sihotang <br>
+👩‍💻 Esther Hutagaol
+</div>
+
+</div>
 </div>
 
 </div>
@@ -157,8 +203,9 @@ let h="";
 d.forEach(a=>{
 h+=`
 <div class="list-item">
-<strong>${a.judul_aktivitas || "-"}</strong>
-<br>${a.tanggal || "-"}
+<strong>${a.judul_aktivitas || "-"}</strong><br>
+${a.tanggal || "-"}<br>
+<small>${a.kategori || "Umum"}</small>
 </div>`;
 });
 document.getElementById("list").innerHTML=h;
@@ -180,7 +227,7 @@ tanggal:document.getElementById("tanggal").value,
 kategori:document.getElementById("topik").value
 })
 });
-alert("Tersimpan");
+alert("Tersimpan!");
 getActivities();
 }catch(e){
 console.log(e);
