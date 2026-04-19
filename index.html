@@ -18,15 +18,16 @@ function showPage(p){
     if(page) page.classList.add("active");
 }
 
-/* SENSOR (ANTI ERROR) */
+/* SENSOR (ANTI ERROR TOTAL) */
 async function getSensor(){
 try{
-    const r=await fetch(API+"/sensor");
-    const d=await r.json();
+    const r = await fetch(API+"/sensor");
+    if(!r.ok) throw new Error("API error");
 
-    if(!d || d.length===0) return;
+    const d = await r.json();
+    if(!d || d.length === 0) return;
 
-    const x=d[d.length-1];
+    const x = d[d.length-1];
 
     if(el("temp")) el("temp").innerText = x.temperature ?? "--";
     if(el("hum")) el("hum").innerText = x.humidity ?? "--";
@@ -37,19 +38,20 @@ try{
     if(el("light2")) el("light2").innerText = x.light ?? "--";
 
 }catch(e){
-    console.log("Sensor error:",e);
+    console.log("Sensor error:", e);
 }
 }
 
-/* AKTIVITAS (ANTI ERROR) */
+/* AKTIVITAS (INI YANG BIKIN PUTIH SEBELUMNYA) */
 async function getActivities(){
 try{
-    const r=await fetch(API+"/activities");
-    const d=await r.json();
+    const r = await fetch(API+"/activities");
+    if(!r.ok) throw new Error("API error");
 
+    const d = await r.json();
     if(!Array.isArray(d)) return;
 
-    let h="";
+    let h = "";
 
     d.forEach(a=>{
         h += `
@@ -63,28 +65,23 @@ try{
         `;
     });
 
-    const listEl = el("list");
-    if(listEl) listEl.innerHTML = h;
+    if(el("list")) el("list").innerHTML = h;
 
 }catch(e){
-    console.log("Aktivitas error:",e);
+    console.log("Aktivitas error:", e);
 }
 }
 
 /* SIMPAN */
 async function tambah(){
 try{
-    const judulEl = el("judul");
-    const tanggalEl = el("tanggal");
-    const topikEl = el("topik");
-
     await fetch(API+"/activities",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
-            judul: judulEl ? judulEl.value : "",
-            tanggal: tanggalEl ? tanggalEl.value : "",
-            kategori: topikEl ? (topikEl.value || "Umum") : "Umum"
+            judul: el("judul")?.value || "",
+            tanggal: el("tanggal")?.value || "",
+            kategori: el("topik")?.value || "Umum"
         })
     });
 
@@ -101,13 +98,13 @@ try{
 /* RESET */
 function resetForm(){
     document.querySelectorAll("input,textarea").forEach(i=>i.value="");
-    const topikEl = el("topik");
-    if(topikEl) topikEl.value="";
 }
 
-/* INIT */
-getSensor();
-getActivities();
+/* INIT (AMAN) */
+window.onload = function(){
+    getSensor();
+    getActivities();
 
-setInterval(getSensor,3000);
+    setInterval(getSensor,3000);
+}
 </script>
