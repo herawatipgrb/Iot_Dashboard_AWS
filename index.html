@@ -112,7 +112,7 @@ body {
 .grid-form {
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:20px;
+    gap: 20px;
 }
 
 .form-group {
@@ -137,6 +137,13 @@ select {
     border:none;
     background:#0f172a;
     color:white;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+select:focus {
+    outline:none;
+    box-shadow:0 0 8px rgba(59,130,246,0.5);
 }
 
 .hint {
@@ -172,7 +179,7 @@ button {
 .profile { text-align:center; margin-top:10px;}
 .profile-name{font-weight:bold;}
 
-/* 🔥 RESPONSIVE (AMAN, TIDAK UBAH AKTIVITAS) */
+/* 🔥 RESPONSIVE (AMAN) */
 @media (max-width: 600px){
 
     .main {
@@ -189,28 +196,16 @@ button {
         font-size: 28px;
     }
 
-    .unit {
-        font-size: 12px;
-    }
-
     .chart {
         width: 80px;
         height: 40px;
-    }
-
-    .topbar h3 {
-        font-size: 16px;
     }
 
     .sidebar {
         width: 180px;
     }
 
-    .sensor-value {
-        font-size: 18px;
-    }
-
-    /* AKTIVITAS TETAP 2 KOLOM */
+    /* AKTIVITAS TETAP */
     .grid-form {
         grid-template-columns: 1fr 1fr;
     }
@@ -244,7 +239,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="temp">--</div><div class="unit">°C</div></div>
-<svg class="chart"><path d="M0 35 Q20 10,40 25 T80 20 T120 30" class="line-blue"/></svg>
 </div>
 </div>
 
@@ -254,7 +248,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="hum">--</div><div class="unit">%</div></div>
-<svg class="chart"><path d="M0 25 Q20 35,40 15 T80 30 T120 25" class="line-cyan"/></svg>
 </div>
 </div>
 
@@ -264,7 +257,6 @@ button {
 </div>
 <div class="card-body">
 <div><div class="big" id="light">--</div><div class="unit">lux</div></div>
-<svg class="chart"><path d="M0 30 Q20 40,40 20 T80 35 T120 30" class="line-yellow"/></svg>
 </div>
 </div>
 
@@ -275,20 +267,20 @@ button {
 <h2>Sensor Monitor</h2>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Suhu</div><div id="temp2" class="sensor-value">--</div></div>🌡️
+<div><div class="sensor-label">Suhu</div><div id="temp2" class="sensor-value">--</div></div>
 </div>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Kelembapan</div><div id="hum2" class="sensor-value">--</div></div>💧
+<div><div class="sensor-label">Kelembapan</div><div id="hum2" class="sensor-value">--</div></div>
 </div>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Cahaya</div><div id="light2" class="sensor-value">--</div></div>☀️
+<div><div class="sensor-label">Cahaya</div><div id="light2" class="sensor-value">--</div></div>
 </div>
 
 </div>
 
-<!-- AKTIVITAS (TIDAK DIUBAH SAMA SEKALI) -->
+<!-- AKTIVITAS (ASLI, TIDAK DIUBAH) -->
 <div id="aktivitas" class="section">
 <h2>Aktivitas Kuliah</h2>
 
@@ -364,12 +356,9 @@ button {
 
 <div class="card">
 <p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
-
 <div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
-<div class="profile"><div class="profile-name">Sabrina Sitohang</div></div>
-<div class="profile"><div class="profile-name">Esther Hutagaol</div></div>
-
 </div>
+
 </div>
 
 </div>
@@ -409,7 +398,8 @@ h+=`
 <strong>${a.judul}</strong>
 <span>${a.tanggal}</span>
 <div style="color:#22c55e;font-size:12px">${a.kategori || "Umum"}</div>
-</div>`;
+</div>
+`;
 });
 list.innerHTML=h;
 }
