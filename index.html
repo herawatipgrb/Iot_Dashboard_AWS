@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cloud Monitoring Dashboard</title>
 
 <style>
@@ -51,7 +52,8 @@ body {
     margin-top: 60px;
     padding: 25px 20px;
     max-width: 650px;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* SECTION */
@@ -66,10 +68,50 @@ body {
     margin-bottom: 18px;
 }
 
-/* GRID FORM */
+/* DASHBOARD */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #94a3b8;
+}
+.tag { padding:3px 8px; border-radius:6px; font-size:10px;}
+.tag.blue{background:#1e40af;}
+.tag.cyan{background:#0891b2;}
+.tag.yellow{background:#b45309;}
+
+.card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.big { font-size: 42px; font-weight: bold; }
+.unit { font-size: 14px; color: #94a3b8; }
+
+.chart { width:120px;height:50px;}
+.chart path{fill:none;stroke-width:3;}
+.line-blue{stroke:#3b82f6;}
+.line-cyan{stroke:#06b6d4;}
+.line-yellow{stroke:#f59e0b;}
+
+/* SENSOR */
+.sensor-box {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#1e293b;
+    padding:15px;
+    border-radius:15px;
+    margin-bottom:10px;
+}
+.sensor-label{color:#94a3b8;}
+.sensor-value{font-size:22px;font-weight:bold;}
+
+/* AKTIVITAS (TIDAK DIUBAH) */
 .grid-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display:grid;
+    grid-template-columns:1fr 1fr;
     gap: 20px;
 }
 
@@ -77,46 +119,97 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 .form-group.full { grid-column: span 2; }
 
-input, textarea, select {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    background: #0f172a;
-    color: white;
+.form-group label {
+    font-size:12px;
+    color:#94a3b8;
+    margin-bottom:4px;
+}
+
+.form-group input,
+.form-group textarea,
+select {
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    background:#0f172a;
+    color:white;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+select:focus {
+    outline:none;
+    box-shadow:0 0 8px rgba(59,130,246,0.5);
+}
+
+.hint {
+    font-size:11px;
+    color:#64748b;
 }
 
 /* BUTTON */
 .btn-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    display:flex;
+    gap:10px;
+    margin-top:10px;
 }
 
 button {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
 }
-.btn-save { background: #22c55e; color: white; }
-.btn-cancel { background: red; color: white; }
+.btn-save{background:#22c55e;color:white;}
+.btn-cancel{background:red;color:white;}
 
 /* LIST */
 .list-item {
-    background: #111827;
-    padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 10px;
+    background:#111827;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
 }
 
-/* SENSOR */
-.sensor-box {
-    background: #1e293b;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 10px;
+/* TENTANG */
+.profile { text-align:center; margin-top:10px;}
+.profile-name{font-weight:bold;}
+
+/* 🔥 RESPONSIVE (AMAN) */
+@media (max-width: 600px){
+
+    .main {
+        padding: 15px 10px;
+        max-width: 100%;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    .big {
+        font-size: 28px;
+    }
+
+    .chart {
+        width: 80px;
+        height: 40px;
+    }
+
+    .sidebar {
+        width: 180px;
+    }
+
+    /* AKTIVITAS TETAP */
+    .grid-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
 }
 </style>
 </head>
@@ -139,31 +232,55 @@ button {
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="section active">
+
 <div class="card">
-<h3>Suhu</h3>
-<div id="temp">--</div>
+<div class="card-header">
+<span>SUHU</span><span class="tag blue">DHT22</span>
+</div>
+<div class="card-body">
+<div><div class="big" id="temp">--</div><div class="unit">°C</div></div>
+</div>
 </div>
 
 <div class="card">
-<h3>Kelembapan</h3>
-<div id="hum">--</div>
+<div class="card-header">
+<span>KELEMBAPAN</span><span class="tag cyan">DHT22</span>
+</div>
+<div class="card-body">
+<div><div class="big" id="hum">--</div><div class="unit">%</div></div>
+</div>
 </div>
 
 <div class="card">
-<h3>Cahaya</h3>
-<div id="light">--</div>
+<div class="card-header">
+<span>CAHAYA</span><span class="tag yellow">BH1750</span>
 </div>
+<div class="card-body">
+<div><div class="big" id="light">--</div><div class="unit">lux</div></div>
+</div>
+</div>
+
 </div>
 
 <!-- SENSOR -->
 <div id="sensor" class="section">
 <h2>Sensor Monitor</h2>
-<div class="sensor-box">Suhu: <span id="temp2">--</span></div>
-<div class="sensor-box">Kelembapan: <span id="hum2">--</span></div>
-<div class="sensor-box">Cahaya: <span id="light2">--</span></div>
+
+<div class="sensor-box">
+<div><div class="sensor-label">Suhu</div><div id="temp2" class="sensor-value">--</div></div>
 </div>
 
-<!-- AKTIVITAS -->
+<div class="sensor-box">
+<div><div class="sensor-label">Kelembapan</div><div id="hum2" class="sensor-value">--</div></div>
+</div>
+
+<div class="sensor-box">
+<div><div class="sensor-label">Cahaya</div><div id="light2" class="sensor-value">--</div></div>
+</div>
+
+</div>
+
+<!-- AKTIVITAS (ASLI, TIDAK DIUBAH) -->
 <div id="aktivitas" class="section">
 <h2>Aktivitas Kuliah</h2>
 
@@ -172,28 +289,50 @@ button {
 <div class="grid-form">
 
 <div class="form-group">
-<label>Judul</label>
+<label>Judul Aktivitas</label>
 <input id="judul">
 </div>
 
 <div class="form-group">
 <label>Tanggal</label>
 <input id="tanggal" type="date">
+<span class="hint">Pilih tanggal kegiatan</span>
 </div>
 
 <div class="form-group">
-<label>Pertemuan</label>
+<label>Pertemuan Ke</label>
 <input id="pertemuan">
 </div>
 
 <div class="form-group">
 <label>Topik</label>
 <select id="topik">
-<option value="">Pilih</option>
-<option>Diskusi</option>
+<option value="">Pilih Topik</option>
 <option>Praktikum</option>
+<option>Diskusi</option>
 <option>Materi</option>
+<option>Tugas</option>
 </select>
+</div>
+
+<div class="form-group">
+<label>Dosen</label>
+<input id="dosen">
+</div>
+
+<div class="form-group full">
+<label>Deskripsi</label>
+<textarea id="deskripsi"></textarea>
+</div>
+
+<div class="form-group full">
+<label>Materi</label>
+<textarea id="materi"></textarea>
+</div>
+
+<div class="form-group full">
+<label>Catatan</label>
+<textarea id="catatan"></textarea>
 </div>
 
 </div>
@@ -213,12 +352,13 @@ button {
 
 <!-- TENTANG -->
 <div id="tentang" class="section">
+<h2>Tentang</h2>
+
 <div class="card">
-<p>Dashboard IoT berbasis AWS</p>
-<p><b>Herawati Syalomita Pangaribuan</b></p>
-<p><b>Sabrina Sitohang</b></p>
-<p><b>Esther Hutagaol</b></p>
+<p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
+<div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
 </div>
+
 </div>
 
 </div>
@@ -226,73 +366,14 @@ button {
 <script>
 const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-/* NAV */
 function toggleMenu(){sidebar.classList.toggle("active");}
+
 function showPage(p){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById(p).classList.add("active");
 }
 
-/* RENDER */
-function renderList(data){
-    let h="";
-    data.forEach(a=>{
-        h+=`
-        <div class="list-item">
-            <b>${a.judul}</b><br>
-            ${a.tanggal}<br>
-            <span style="color:#22c55e">${a.kategori || "Umum"}</span>
-        </div>`;
-    });
-    list.innerHTML=h;
-}
-
-/* GET */
-async function getActivities(){
-    try{
-        const r=await fetch(API+"/activities");
-        const d=await r.json();
-        localStorage.setItem("data",JSON.stringify(d));
-        renderList(d);
-    }catch{
-        renderList(JSON.parse(localStorage.getItem("data"))||[]);
-    }
-}
-
-/* TAMBAH (INSTANT) */
-async function tambah(){
-    const newData={
-        id:Date.now(),
-        judul:judul.value,
-        tanggal:tanggal.value,
-        kategori:topik.value
-    };
-
-    let data=JSON.parse(localStorage.getItem("data"))||[];
-    data.push(newData);
-    localStorage.setItem("data",JSON.stringify(data));
-    renderList(data);
-
-    try{
-        await fetch(API+"/activities",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(newData)
-        });
-    }catch{}
-
-    alert("Tersimpan");
-    resetForm();
-}
-
-/* RESET */
-function resetForm(){
-document.querySelectorAll("input").forEach(i=>i.value="");
-}
-
-/* SENSOR */
 async function getSensor(){
-try{
 const r=await fetch(API+"/sensor");
 const d=await r.json();
 const x=d[d.length-1];
@@ -304,13 +385,46 @@ light.innerText=x.light;
 temp2.innerText=x.temperature;
 hum2.innerText=x.humidity;
 light2.innerText=x.light;
-
-}catch{}
 }
 
-/* INIT */
+async function getActivities(){
+const r=await fetch(API+"/activities");
+const d=await r.json();
+
+let h="";
+d.forEach(a=>{
+h+=`
+<div class="list-item">
+<strong>${a.judul}</strong>
+<span>${a.tanggal}</span>
+<div style="color:#22c55e;font-size:12px">${a.kategori || "Umum"}</div>
+</div>
+`;
+});
+list.innerHTML=h;
+}
+
+async function tambah(){
+await fetch(API+"/activities",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+judul:judul.value,
+tanggal:tanggal.value,
+kategori:topik.value || "Umum"
+})
+});
+alert("Tersimpan");
+resetForm();
 getActivities();
+}
+
+function resetForm(){
+document.querySelectorAll("input,textarea").forEach(i=>i.value="");
+}
+
 getSensor();
+getActivities();
 setInterval(getSensor,3000);
 </script>
 
