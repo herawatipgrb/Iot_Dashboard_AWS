@@ -45,9 +45,9 @@ body {
     border-radius: 8px;
     text-decoration: none;
 }
-.sidebar a:hover {
-    background: #1e293b;
-    color: white;
+.sidebar a:hover { 
+    background: #1e293b; 
+    color: white; 
 }
 
 /* MAIN */
@@ -79,7 +79,11 @@ body {
     color: #94a3b8;
 }
 
-.tag { padding:3px 8px; border-radius:6px; font-size:10px;}
+.tag { 
+    padding:3px 8px; 
+    border-radius:6px; 
+    font-size:10px;
+}
 .tag.blue{background:#1e40af;}
 .tag.cyan{background:#0891b2;}
 .tag.yellow{background:#b45309;}
@@ -90,8 +94,20 @@ body {
     align-items: center;
 }
 
-.big { font-size: 42px; font-weight: bold; }
-.unit { font-size: 14px; color: #94a3b8; }
+.big { 
+    font-size: 42px; 
+    font-weight: bold; 
+}
+.unit { 
+    font-size: 14px; 
+    color: #94a3b8; 
+}
+
+.chart { width:120px;height:50px;}
+.chart path{fill:none;stroke-width:3;}
+.line-blue{stroke:#3b82f6;}
+.line-cyan{stroke:#06b6d4;}
+.line-yellow{stroke:#f59e0b;}
 
 /* SENSOR */
 .sensor-box {
@@ -106,7 +122,7 @@ body {
 .sensor-label{color:#94a3b8;}
 .sensor-value{font-size:22px;font-weight:bold;}
 
-/* AKTIVITAS */
+/* AKTIVITAS (TIDAK DIUBAH) */
 .grid-form {
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -173,10 +189,39 @@ button {
     margin-bottom:10px;
 }
 
+/* TENTANG */
+.profile { text-align:center; margin-top:10px;}
+.profile-name{font-weight:bold;}
+
 /* RESPONSIVE */
 @media (max-width: 600px){
-    .main { padding: 15px 10px; max-width: 100%; }
-    .big { font-size: 28px; }
+
+    .main {
+        padding: 15px 10px;
+        max-width: 100%;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    .big {
+        font-size: 28px;
+    }
+
+    .chart {
+        width: 80px;
+        height: 40px;
+    }
+
+    .sidebar {
+        width: 180px;
+    }
+
+    .grid-form {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 </style>
 </head>
@@ -184,7 +229,7 @@ button {
 <body>
 
 <div class="topbar">
-    <div onclick="toggleMenu()" style="cursor:pointer">☰</div>
+    <div onclick="toggleMenu()">☰</div>
     <h3 style="margin-left:10px;">Dashboard</h3>
 </div>
 
@@ -199,12 +244,16 @@ button {
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="section active">
+
 <div class="card">
 <div class="card-header">
 <span>SUHU</span><span class="tag blue">DHT22</span>
 </div>
 <div class="card-body">
-<div><div class="big" id="temp">--</div><div class="unit">°C</div></div>
+<div>
+<div class="big" id="temp">--</div>
+<div class="unit">°C</div>
+</div>
 </div>
 </div>
 
@@ -213,7 +262,10 @@ button {
 <span>KELEMBAPAN</span><span class="tag cyan">DHT22</span>
 </div>
 <div class="card-body">
-<div><div class="big" id="hum">--</div><div class="unit">%</div></div>
+<div>
+<div class="big" id="hum">--</div>
+<div class="unit">%</div>
+</div>
 </div>
 </div>
 
@@ -222,9 +274,13 @@ button {
 <span>CAHAYA</span><span class="tag yellow">BH1750</span>
 </div>
 <div class="card-body">
-<div><div class="big" id="light">--</div><div class="unit">lux</div></div>
+<div>
+<div class="big" id="light">--</div>
+<div class="unit">lux</div>
 </div>
 </div>
+</div>
+
 </div>
 
 <!-- SENSOR -->
@@ -232,16 +288,26 @@ button {
 <h2>Sensor Monitor</h2>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Suhu</div><div id="temp2" class="sensor-value">--</div></div>
+<div>
+<div class="sensor-label">Suhu</div>
+<div id="temp2" class="sensor-value">--</div>
+</div>
 </div>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Kelembapan</div><div id="hum2" class="sensor-value">--</div></div>
+<div>
+<div class="sensor-label">Kelembapan</div>
+<div id="hum2" class="sensor-value">--</div>
+</div>
 </div>
 
 <div class="sensor-box">
-<div><div class="sensor-label">Cahaya</div><div id="light2" class="sensor-value">--</div></div>
+<div>
+<div class="sensor-label">Cahaya</div>
+<div id="light2" class="sensor-value">--</div>
 </div>
+</div>
+
 </div>
 
 <!-- AKTIVITAS -->
@@ -309,6 +375,20 @@ button {
 <div class="card">
 <div id="list"></div>
 </div>
+
+</div>
+
+<!-- TENTANG -->
+<div id="tentang" class="section">
+<h2>Tentang</h2>
+
+<div class="card">
+<p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
+<div class="profile">
+<div class="profile-name">Herawati Syalomita Pangaribuan</div>
+</div>
+</div>
+
 </div>
 
 </div>
@@ -316,65 +396,53 @@ button {
 <script>
 const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-function toggleMenu(){
-    document.getElementById("sidebar").classList.toggle("active");
-}
+function toggleMenu(){sidebar.classList.toggle("active");}
 
 function showPage(p){
-    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-    document.getElementById(p).classList.add("active");
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(p).classList.add("active");
 }
 
 async function getSensor(){
-try{
-    const r=await fetch(API+"/sensor");
-    const d=await r.json();
-    if(!d.length) return;
+const r=await fetch(API+"/sensor");
+const d=await r.json();
+const x=d[d.length-1];
 
-    const x=d[d.length-1];
+temp.innerText=x.temperature;
+hum.innerText=x.humidity;
+light.innerText=x.light;
 
-    document.getElementById("temp").innerText=x.temperature ?? "--";
-    document.getElementById("hum").innerText=x.humidity ?? "--";
-    document.getElementById("light").innerText=x.light ?? "--";
-
-    document.getElementById("temp2").innerText=x.temperature ?? "--";
-    document.getElementById("hum2").innerText=x.humidity ?? "--";
-    document.getElementById("light2").innerText=x.light ?? "--";
-}catch(e){
-    console.log("Sensor error:",e);
-}
+temp2.innerText=x.temperature;
+hum2.innerText=x.humidity;
+light2.innerText=x.light;
 }
 
 async function getActivities(){
-try{
-    const r=await fetch(API+"/activities");
-    const d=await r.json();
+const r=await fetch(API+"/activities");
+const d=await r.json();
 
-    let h="";
-    d.forEach(a=>{
-        h+=`
-        <div class="list-item">
-            <strong>${a.judul}</strong>
-            <span>${a.tanggal}</span>
-            <div style="color:#22c55e;font-size:12px">${a.kategori || "Umum"}</div>
-        </div>`;
-    });
-
-    document.getElementById("list").innerHTML=h;
-}catch(e){
-    console.log("Activity error:",e);
-}
+let h="";
+d.forEach(a=>{
+h+=`
+<div class="list-item">
+<strong>${a.judul}</strong>
+<span>${a.tanggal}</span>
+<div style="color:#22c55e;font-size:12px">${a.kategori || "Umum"}</div>
+</div>
+`;
+});
+list.innerHTML=h;
 }
 
 async function tambah(){
 await fetch(API+"/activities",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-        judul:judul.value,
-        tanggal:tanggal.value,
-        kategori:topik.value || "Umum"
-    })
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+judul:judul.value,
+tanggal:tanggal.value,
+kategori:topik.value || "Umum"
+})
 });
 alert("Tersimpan");
 resetForm();
