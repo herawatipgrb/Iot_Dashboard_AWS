@@ -4,6 +4,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cloud Monitoring Dashboard</title>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body {
     margin: 0;
@@ -89,12 +91,6 @@ body {
 .big { font-size: 42px; font-weight: bold; }
 .unit { font-size: 14px; color: #94a3b8; }
 
-.chart { width:120px;height:50px;}
-.chart path{fill:none;stroke-width:3;}
-.line-blue{stroke:#3b82f6;}
-.line-cyan{stroke:#06b6d4;}
-.line-yellow{stroke:#f59e0b;}
-
 /* SENSOR */
 .sensor-box {
     display:flex;
@@ -108,7 +104,7 @@ body {
 .sensor-label{color:#94a3b8;}
 .sensor-value{font-size:22px;font-weight:bold;}
 
-/* AKTIVITAS (TIDAK DIUBAH) */
+/* AKTIVITAS */
 .grid-form {
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -179,37 +175,11 @@ button {
 .profile { text-align:center; margin-top:10px;}
 .profile-name{font-weight:bold;}
 
-/* 🔥 RESPONSIVE (AMAN) */
+/* RESPONSIVE */
 @media (max-width: 600px){
-
-    .main {
-        padding: 15px 10px;
-        max-width: 100%;
-    }
-
-    .card {
-        padding: 15px;
-        border-radius: 15px;
-    }
-
-    .big {
-        font-size: 28px;
-    }
-
-    .chart {
-        width: 80px;
-        height: 40px;
-    }
-
-    .sidebar {
-        width: 180px;
-    }
-
-    /* AKTIVITAS TETAP */
-    .grid-form {
-        grid-template-columns: 1fr 1fr;
-    }
-
+    .main { padding: 15px 10px; max-width: 100%; }
+    .card { padding: 15px; border-radius: 15px; }
+    .big { font-size: 28px; }
 }
 </style>
 </head>
@@ -237,8 +207,15 @@ button {
 <div class="card-header">
 <span>SUHU</span><span class="tag blue">DHT22</span>
 </div>
+
 <div class="card-body">
-<div><div class="big" id="temp">--</div><div class="unit">°C</div></div>
+<div>
+    <div class="big" id="temp">--</div>
+    <div class="unit">°C</div>
+</div>
+
+<canvas id="tempChart" width="120" height="50"></canvas>
+
 </div>
 </div>
 
@@ -280,7 +257,7 @@ button {
 
 </div>
 
-<!-- AKTIVITAS (ASLI, TIDAK DIUBAH) -->
+<!-- AKTIVITAS -->
 <div id="aktivitas" class="section">
 <h2>Aktivitas Kuliah</h2>
 
@@ -356,15 +333,44 @@ button {
 
 <div class="card">
 <p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
-<div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
-</div>
 
+<div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
+<div class="profile"><div class="profile-name">Sabrina Sihotang</div></div>
+<div class="profile"><div class="profile-name">Esther Hutagaol</div></div>
+
+</div>
 </div>
 
 </div>
 
 <script>
 const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
+
+let tempData = [];
+let labels = [];
+
+const ctx = document.getElementById('tempChart').getContext('2d');
+
+const tempChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: tempData,
+            borderColor: '#3b82f6',
+            tension: 0.4,
+            fill: false,
+        }]
+    },
+    options: {
+        responsive: false,
+        plugins: { legend: { display: false }},
+        scales: {
+            x: { display: false },
+            y: { display: false }
+        }
+    }
+});
 
 function toggleMenu(){sidebar.classList.toggle("active");}
 
@@ -385,6 +391,19 @@ light.innerText=x.light;
 temp2.innerText=x.temperature;
 hum2.innerText=x.humidity;
 light2.innerText=x.light;
+
+// update chart
+const now = new Date().toLocaleTimeString();
+
+tempData.push(x.temperature);
+labels.push(now);
+
+if(tempData.length > 10){
+    tempData.shift();
+    labels.shift();
+}
+
+tempChart.update();
 }
 
 async function getActivities(){
