@@ -11,25 +11,32 @@ body {
     color: white;
 }
 
-/* ===== TOPBAR ===== */
+/* ===== TOPBAR (FIX UTAMA) ===== */
 .topbar {
     height: 60px;
     background: #020617;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 15px;
     position: fixed;
     width: 100%;
     top: 0;
+    left: 0;
     z-index: 999;
+    box-sizing: border-box;
 }
 
-/* HAMBURGER */
 .menu-btn {
-    font-size: 26px;
+    font-size: 24px;
     cursor: pointer;
     color: white;
-    margin-right: 15px;
+    margin-right: 10px;
+}
+
+.topbar h3 {
+    margin: 0;
+    font-size: 16px;
+    white-space: nowrap;
 }
 
 /* ===== SIDEBAR ===== */
@@ -68,7 +75,7 @@ body {
     padding: 20px;
 }
 
-/* SECTION */
+/* ===== SECTION ===== */
 .section {
     display: none;
     animation: fadeIn 0.5s ease;
@@ -78,13 +85,12 @@ body {
     display: block;
 }
 
-/* ANIMASI */
 @keyframes fadeIn {
     from {opacity: 0; transform: translateY(10px);}
     to {opacity: 1; transform: translateY(0);}
 }
 
-/* CARD */
+/* ===== CARD ===== */
 .card {
     background: #1e293b;
     padding: 20px;
@@ -92,7 +98,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* GRID JADI KE BAWAH */
+/* DASHBOARD KE BAWAH */
 .grid {
     display: flex;
     flex-direction: column;
@@ -103,7 +109,7 @@ body {
     font-size: 28px;
 }
 
-/* FORM */
+/* ===== FORM ===== */
 input, textarea {
     width: 100%;
     padding: 10px;
@@ -127,13 +133,6 @@ button {
 .btn-cancel {
     background: red;
     color: white;
-}
-
-/* MOBILE FIX */
-@media (max-width: 768px) {
-    .grid {
-        flex-direction: column;
-    }
 }
 </style>
 
@@ -180,10 +179,9 @@ button {
     </div>
 </div>
 
-<!-- SENSOR ONLY -->
+<!-- SENSOR -->
 <div id="sensor" class="section">
     <h2>Sensor Monitor</h2>
-
     <div class="card">
         <p>Suhu: <span id="temp2">--</span></p>
         <p>Kelembapan: <span id="hum2">--</span></p>
@@ -233,7 +231,7 @@ function toggleMenu(){
     document.getElementById("sidebar").classList.toggle("active");
 }
 
-/* NAVIGATION */
+/* NAV */
 function showPage(page){
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
     document.getElementById(page).classList.add("active");
@@ -273,7 +271,6 @@ async function getActivities(){
         });
 
         list.innerHTML = html;
-
     }catch{}
 }
 
