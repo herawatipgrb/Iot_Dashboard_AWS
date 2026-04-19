@@ -8,17 +8,15 @@ function el(id){
 
 /* MENU */
 function toggleMenu(){
-    const sb = el("sidebar");
-    if(sb) sb.classList.toggle("active");
+    el("sidebar").classList.toggle("active");
 }
 
 function showPage(p){
     document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-    const page = el(p);
-    if(page) page.classList.add("active");
+    el(p).classList.add("active");
 }
 
-/* SENSOR (ANTI ERROR + ANIMASI SEDIKIT) */
+/* SENSOR (ANTI ERROR) */
 async function getSensor(){
 try{
     const r=await fetch(API+"/sensor");
@@ -28,30 +26,20 @@ try{
 
     const x=d[d.length-1];
 
-    updateValue("temp", x.temperature, "°C");
-    updateValue("hum", x.humidity, "%");
-    updateValue("light", x.light, "lux");
+    if(el("temp")) el("temp").innerText=x.temperature ?? "--";
+    if(el("hum")) el("hum").innerText=x.humidity ?? "--";
+    if(el("light")) el("light").innerText=x.light ?? "--";
 
-    updateValue("temp2", x.temperature);
-    updateValue("hum2", x.humidity);
-    updateValue("light2", x.light);
+    if(el("temp2")) el("temp2").innerText=x.temperature ?? "--";
+    if(el("hum2")) el("hum2").innerText=x.humidity ?? "--";
+    if(el("light2")) el("light2").innerText=x.light ?? "--";
 
 }catch(e){
     console.log("Sensor error:",e);
 }
 }
 
-/* ANIMASI ANGKA */
-function updateValue(id, val, unit=""){
-    const e = el(id);
-    if(!e) return;
-
-    e.style.transform="scale(1.1)";
-    e.innerText = (val ?? "--") + (unit || "");
-    setTimeout(()=>{ e.style.transform="scale(1)"; },200);
-}
-
-/* AKTIVITAS (FIX PUTIH) */
+/* AKTIVITAS (FIX ERROR PUTIH DI SINI) */
 async function getActivities(){
 try{
     const r=await fetch(API+"/activities");
@@ -73,8 +61,7 @@ try{
         `;
     });
 
-    const listEl = el("list");
-    if(listEl) listEl.innerHTML=h;
+    if(el("list")) el("list").innerHTML=h;
 
 }catch(e){
     console.log("Aktivitas error:",e);
@@ -88,9 +75,9 @@ try{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
-            judul: el("judul")?.value,
-            tanggal: el("tanggal")?.value,
-            kategori: el("topik")?.value || "Umum"
+            judul: el("judul").value,
+            tanggal: el("tanggal").value,
+            kategori: el("topik").value || "Umum"
         })
     });
 
