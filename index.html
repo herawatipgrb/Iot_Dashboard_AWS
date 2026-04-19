@@ -12,6 +12,7 @@ body {
     font-family: 'Segoe UI', sans-serif;
     background: #0f172a;
     color: white;
+    overflow-x: hidden;
 }
 
 .topbar {
@@ -100,9 +101,78 @@ canvas {
     margin-bottom:10px;
 }
 
+/* AKTIVITAS */
+.grid-form {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group.full { grid-column: span 2; }
+
+input, textarea, select {
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    background:#0f172a;
+    color:white;
+}
+
+.btn-group {
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+button {
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.btn-save { background:#22c55e; color:white; }
+.btn-cancel { background:red; color:white; }
+
+.list-item {
+    background:#111827;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
 /* TENTANG */
 .profile { text-align:center; margin-top:10px;}
 .profile-name{font-weight:bold;}
+
+/* 🔥 RESPONSIVE HP */
+@media (max-width: 768px) {
+
+    .main {
+        padding: 15px 12px;
+        max-width: 100%;
+    }
+
+    .card-body {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .big {
+        font-size: 32px;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: 60px !important;
+    }
+}
 </style>
 </head>
 
@@ -116,6 +186,7 @@ canvas {
 <div class="sidebar" id="sidebar">
     <a onclick="showPage('dashboard')">Dashboard</a>
     <a onclick="showPage('sensor')">Sensor Monitor</a>
+    <a onclick="showPage('aktivitas')">Aktivitas Kuliah</a>
     <a onclick="showPage('tentang')">Tentang</a>
 </div>
 
@@ -124,50 +195,41 @@ canvas {
 <!-- DASHBOARD -->
 <div id="dashboard" class="section active">
 
-<!-- SUHU -->
 <div class="card">
 <div class="card-header">
 <span>SUHU</span><span class="tag blue">DHT22</span>
 </div>
-
 <div class="card-body">
 <div>
 <div class="big" id="temp">--</div>
 <div class="unit">°C</div>
 </div>
-
 <canvas id="tempChart"></canvas>
 </div>
 </div>
 
-<!-- KELEMBAPAN -->
 <div class="card">
 <div class="card-header">
 <span>KELEMBAPAN</span><span class="tag cyan">DHT22</span>
 </div>
-
 <div class="card-body">
 <div>
 <div class="big" id="hum">--</div>
 <div class="unit">%</div>
 </div>
-
 <canvas id="humChart"></canvas>
 </div>
 </div>
 
-<!-- CAHAYA -->
 <div class="card">
 <div class="card-header">
 <span>CAHAYA</span><span class="tag yellow">BH1750</span>
 </div>
-
 <div class="card-body">
 <div>
 <div class="big" id="light">--</div>
 <div class="unit">lux</div>
 </div>
-
 <canvas id="lightChart"></canvas>
 </div>
 </div>
@@ -177,24 +239,55 @@ canvas {
 <!-- SENSOR -->
 <div id="sensor" class="section">
 <h2>Sensor Monitor</h2>
-
 <div class="sensor-box">Suhu: <span id="temp2">--</span></div>
 <div class="sensor-box">Kelembapan: <span id="hum2">--</span></div>
 <div class="sensor-box">Cahaya: <span id="light2">--</span></div>
+</div>
 
+<!-- AKTIVITAS -->
+<div id="aktivitas" class="section">
+<h2>Aktivitas Kuliah</h2>
+
+<div class="card">
+<div class="grid-form">
+<div class="form-group">
+<label>Judul</label>
+<input id="judul">
+</div>
+<div class="form-group">
+<label>Tanggal</label>
+<input id="tanggal" type="date">
+</div>
+<div class="form-group full">
+<label>Topik</label>
+<select id="topik">
+<option>Praktikum</option>
+<option>Diskusi</option>
+<option>Materi</option>
+<option>Tugas</option>
+</select>
+</div>
+</div>
+
+<div class="btn-group">
+<button class="btn-cancel" onclick="resetForm()">Batal</button>
+<button class="btn-save" onclick="tambah()">Simpan</button>
+</div>
+</div>
+
+<div class="card">
+<div id="list"></div>
+</div>
 </div>
 
 <!-- TENTANG -->
 <div id="tentang" class="section">
 <h2>Tentang</h2>
-
 <div class="card">
 <p style="text-align:center;">Dashboard Monitoring IoT berbasis Cloud & AWS</p>
-
 <div class="profile"><div class="profile-name">Herawati Syalomita Pangaribuan</div></div>
 <div class="profile"><div class="profile-name">Sabrina Sihotang</div></div>
 <div class="profile"><div class="profile-name">Esther Hutagaol</div></div>
-
 </div>
 </div>
 
@@ -205,22 +298,11 @@ const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
 let labels=[], tempData=[], humData=[], lightData=[];
 
-function createChart(id, color, dataArr){
-return new Chart(document.getElementById(id), {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [{
-            data: dataArr,
-            borderColor: color,
-            tension: 0.4
-        }]
-    },
-    options: {
-        responsive:false,
-        plugins:{legend:{display:false}},
-        scales:{x:{display:false},y:{display:false}}
-    }
+function createChart(id,color,dataArr){
+return new Chart(document.getElementById(id),{
+type:'line',
+data:{labels:labels,datasets:[{data:dataArr,borderColor:color,tension:0.4}]},
+options:{responsive:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false}}}
 });
 }
 
@@ -267,7 +349,38 @@ humChart.update();
 lightChart.update();
 }
 
+async function getActivities(){
+const r=await fetch(API+"/activities");
+const d=await r.json();
+
+let h="";
+d.forEach(a=>{
+h+=`<div class="list-item"><strong>${a.judul}</strong> - ${a.tanggal}</div>`;
+});
+list.innerHTML=h;
+}
+
+async function tambah(){
+await fetch(API+"/activities",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+judul:judul.value,
+tanggal:tanggal.value,
+kategori:topik.value
+})
+});
+alert("Tersimpan");
+resetForm();
+getActivities();
+}
+
+function resetForm(){
+document.querySelectorAll("input,textarea").forEach(i=>i.value="");
+}
+
 getSensor();
+getActivities();
 setInterval(getSensor,3000);
 </script>
 
