@@ -1,312 +1,104 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Cloud Monitoring Dashboard</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #0f172a;
-    color: white;
-}
-
-/* ===== TOPBAR ===== */
-.topbar {
-    height: 60px;
-    background: #020617;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 999;
-}
-
-/* HAMBURGER */
-.menu-btn {
-    font-size: 26px;
-    cursor: pointer;
-    color: white;
-    margin-right: 15px;
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar {
-    width: 220px;
-    height: 100%;
-    background: #020617;
-    position: fixed;
-    top: 60px;
-    left: -220px;
-    padding: 20px;
-    transition: 0.3s;
-}
-
-.sidebar.active {
-    left: 0;
-}
-
-.sidebar a {
-    display: block;
-    color: #94a3b8;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.sidebar a:hover {
-    background: #1e293b;
-    color: white;
-}
-
-/* ===== MAIN ===== */
-.main {
-    margin-top: 70px;
-    padding: 20px;
-}
-
-/* SECTION */
-.section {
-    display: none;
-    animation: fadeIn 0.5s ease;
-}
-
-.section.active {
-    display: block;
-}
-
-/* ANIMASI */
-@keyframes fadeIn {
-    from {opacity: 0; transform: translateY(10px);}
-    to {opacity: 1; transform: translateY(0);}
-}
-
-/* CARD */
-.card {
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-}
-
-/* GRID JADI KE BAWAH */
-.grid {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.value {
-    font-size: 28px;
-}
-
-/* FORM */
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 6px 0;
-    border-radius: 8px;
-    border: none;
-}
-
-button {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-save {
-    background: #22c55e;
-    color: white;
-}
-
-.btn-cancel {
-    background: red;
-    color: white;
-}
-
-/* MOBILE FIX */
-@media (max-width: 768px) {
-    .grid {
-        flex-direction: column;
-    }
-}
-</style>
-
-</head>
-
-<body>
-
-<!-- TOPBAR -->
-<div class="topbar">
-    <div class="menu-btn" onclick="toggleMenu()">☰</div>
-    <h3>Cloud Monitoring</h3>
-</div>
-
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
-    <a href="#" onclick="showPage('sensor')">Sensor Monitor</a>
-    <a href="#" onclick="showPage('aktivitas')">Aktivitas Kuliah</a>
-    <a href="#" onclick="showPage('tentang')">Tentang</a>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="section active">
-    <h2>Dashboard</h2>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Suhu</h3>
-            <div class="value" id="temp">-- °C</div>
-        </div>
-
-        <div class="card">
-            <h3>Kelembapan</h3>
-            <div class="value" id="hum">-- %</div>
-        </div>
-
-        <div class="card">
-            <h3>Cahaya</h3>
-            <div class="value" id="light">-- lux</div>
-        </div>
-    </div>
-</div>
-
-<!-- SENSOR ONLY -->
-<div id="sensor" class="section">
-    <h2>Sensor Monitor</h2>
-
-    <div class="card">
-        <p>Suhu: <span id="temp2">--</span></p>
-        <p>Kelembapan: <span id="hum2">--</span></p>
-        <p>Cahaya: <span id="light2">--</span></p>
-    </div>
-</div>
-
-<!-- AKTIVITAS -->
-<div id="aktivitas" class="section">
-    <h2>Aktivitas Kuliah</h2>
-
-    <div class="card">
-        <input id="judul" placeholder="Judul Aktivitas">
-        <input id="tanggal" type="date">
-        <input id="pertemuan" placeholder="Pertemuan Ke">
-        <input id="topik" placeholder="Topik">
-        <input id="dosen" placeholder="Dosen">
-        <textarea id="deskripsi" placeholder="Deskripsi"></textarea>
-        <textarea id="materi" placeholder="Materi"></textarea>
-        <textarea id="catatan" placeholder="Catatan"></textarea>
-
-        <button class="btn-cancel" onclick="resetForm()">Batal</button>
-        <button class="btn-save" onclick="tambah()">Simpan</button>
-    </div>
-
-    <div class="card">
-        <ul id="list"></ul>
-    </div>
-</div>
-
-<!-- TENTANG -->
-<div id="tentang" class="section">
-    <h2>Tentang</h2>
-    <div class="card">
-        <p>Dashboard Monitoring IoT berbasis Cloud & AWS</p>
-    </div>
-</div>
-
-</div>
-
 <script>
+const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-const API = "https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
+/* AMANIN ELEMENT */
+function el(id){
+    return document.getElementById(id);
+}
 
 /* MENU */
 function toggleMenu(){
-    document.getElementById("sidebar").classList.toggle("active");
+    el("sidebar").classList.toggle("active");
 }
 
-/* NAVIGATION */
-function showPage(page){
-    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-    document.getElementById(page).classList.add("active");
+function showPage(p){
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    el(p).classList.add("active");
 }
 
-/* SENSOR */
+/* SENSOR (ANTI ERROR) */
 async function getSensor(){
-    try{
-        const res = await fetch(API + "/sensor");
-        const data = await res.json();
-        const last = data[data.length - 1];
+try{
+    const r=await fetch(API+"/sensor");
+    const d=await r.json();
 
-        temp.innerText = last.temperature + " °C";
-        hum.innerText = last.humidity + " %";
-        light.innerText = last.light + " lux";
+    if(!d || d.length===0) return;
 
-        temp2.innerText = last.temperature;
-        hum2.innerText = last.humidity;
-        light2.innerText = last.light;
+    const x=d[d.length-1];
 
-    }catch{
-        temp.innerText = "Error";
-        hum.innerText = "Error";
-        light.innerText = "Error";
-    }
+    if(el("temp")) el("temp").innerText=x.temperature ?? "--";
+    if(el("hum")) el("hum").innerText=x.humidity ?? "--";
+    if(el("light")) el("light").innerText=x.light ?? "--";
+
+    if(el("temp2")) el("temp2").innerText=x.temperature ?? "--";
+    if(el("hum2")) el("hum2").innerText=x.humidity ?? "--";
+    if(el("light2")) el("light2").innerText=x.light ?? "--";
+
+}catch(e){
+    console.log("Sensor error:",e);
+}
 }
 
-/* GET AKTIVITAS */
+/* AKTIVITAS (FIX ERROR PUTIH DI SINI) */
 async function getActivities(){
-    try{
-        const res = await fetch(API + "/activities");
-        const data = await res.json();
+try{
+    const r=await fetch(API+"/activities");
+    const d=await r.json();
 
-        let html = "";
-        data.forEach(a=>{
-            html += `<li>${a.judul} - ${a.tanggal}</li>`;
-        });
+    if(!Array.isArray(d)) return;
 
-        list.innerHTML = html;
+    let h="";
 
-    }catch{}
+    d.forEach(a=>{
+        h+=`
+        <div class="list-item">
+            <strong>${a.judul || "-"}</strong><br>
+            <small>${a.tanggal || "-"}</small><br>
+            <div style="color:#22c55e;font-size:12px">
+                ${a.kategori || "Umum"}
+            </div>
+        </div>
+        `;
+    });
+
+    if(el("list")) el("list").innerHTML=h;
+
+}catch(e){
+    console.log("Aktivitas error:",e);
+}
 }
 
-/* TAMBAH */
+/* SIMPAN */
 async function tambah(){
-    const data = {
-        judul: judul.value,
-        tanggal: tanggal.value,
-        kategori: topik.value
-    };
-
-    await fetch(API + "/activities", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify(data)
+try{
+    await fetch(API+"/activities",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            judul: el("judul").value,
+            tanggal: el("tanggal").value,
+            kategori: el("topik").value || "Umum"
+        })
     });
 
     alert("Tersimpan");
     resetForm();
     getActivities();
+
+}catch(e){
+    alert("Gagal simpan");
+    console.log(e);
+}
 }
 
 /* RESET */
 function resetForm(){
-    document.querySelectorAll("input, textarea").forEach(i=>i.value="");
+    document.querySelectorAll("input,textarea").forEach(i=>i.value="");
 }
 
-/* AUTO */
+/* INIT */
 getSensor();
 getActivities();
+
 setInterval(getSensor,3000);
-
 </script>
-
-</body>
-</html>
