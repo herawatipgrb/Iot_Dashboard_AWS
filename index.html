@@ -1,7 +1,7 @@
 <script>
 const API="https://o6teddrptd.execute-api.ap-southeast-1.amazonaws.com/prod";
 
-/* SAFE GET ELEMENT */
+/* AMANIN ELEMENT */
 function el(id){
     return document.getElementById(id);
 }
@@ -19,62 +19,52 @@ function showPage(p){
 /* SENSOR (ANTI ERROR) */
 async function getSensor(){
 try{
-    const r = await fetch(API+"/sensor");
-    const d = await r.json();
+    const r=await fetch(API+"/sensor");
+    const d=await r.json();
 
-    if(!d || d.length === 0) return;
+    if(!d || d.length===0) return;
 
-    const x = d[d.length-1];
+    const x=d[d.length-1];
 
-    if(el("temp")) el("temp").innerText = x.temperature ?? "--";
-    if(el("hum")) el("hum").innerText = x.humidity ?? "--";
-    if(el("light")) el("light").innerText = x.light ?? "--";
+    if(el("temp")) el("temp").innerText=x.temperature ?? "--";
+    if(el("hum")) el("hum").innerText=x.humidity ?? "--";
+    if(el("light")) el("light").innerText=x.light ?? "--";
 
-    if(el("temp2")) el("temp2").innerText = x.temperature ?? "--";
-    if(el("hum2")) el("hum2").innerText = x.humidity ?? "--";
-    if(el("light2")) el("light2").innerText = x.light ?? "--";
+    if(el("temp2")) el("temp2").innerText=x.temperature ?? "--";
+    if(el("hum2")) el("hum2").innerText=x.humidity ?? "--";
+    if(el("light2")) el("light2").innerText=x.light ?? "--";
 
 }catch(e){
-    console.log("Sensor error:", e);
+    console.log("Sensor error:",e);
 }
 }
 
-/* AKTIVITAS (ANTI ERROR) */
+/* AKTIVITAS (FIX ERROR PUTIH DI SINI) */
 async function getActivities(){
 try{
-    const r = await fetch(API+"/activities");
-    const d = await r.json();
-
-    let h = "";
+    const r=await fetch(API+"/activities");
+    const d=await r.json();
 
     if(!Array.isArray(d)) return;
 
+    let h="";
+
     d.forEach(a=>{
-        h += `
+        h+=`
         <div class="list-item">
             <strong>${a.judul || "-"}</strong><br>
             <small>${a.tanggal || "-"}</small><br>
-
             <div style="color:#22c55e;font-size:12px">
                 ${a.kategori || "Umum"}
-            </div>
-
-            <div style="font-size:12px;color:#94a3b8">
-                Pertemuan: ${a.pertemuan || "-"} <br>
-                Dosen: ${a.dosen || "-"}
-            </div>
-
-            <div style="margin-top:5px;font-size:12px">
-                ${a.deskripsi || ""}
             </div>
         </div>
         `;
     });
 
-    if(el("list")) el("list").innerHTML = h;
+    if(el("list")) el("list").innerHTML=h;
 
 }catch(e){
-    console.log("Aktivitas error:", e);
+    console.log("Aktivitas error:",e);
 }
 }
 
@@ -87,12 +77,7 @@ try{
         body:JSON.stringify({
             judul: el("judul").value,
             tanggal: el("tanggal").value,
-            kategori: el("topik").value || "Umum",
-            pertemuan: el("pertemuan").value,
-            dosen: el("dosen").value,
-            deskripsi: el("deskripsi").value,
-            materi: el("materi").value,
-            catatan: el("catatan").value
+            kategori: el("topik").value || "Umum"
         })
     });
 
@@ -101,7 +86,7 @@ try{
     getActivities();
 
 }catch(e){
-    alert("Gagal simpan!");
+    alert("Gagal simpan");
     console.log(e);
 }
 }
@@ -109,7 +94,6 @@ try{
 /* RESET */
 function resetForm(){
     document.querySelectorAll("input,textarea").forEach(i=>i.value="");
-    if(el("topik")) el("topik").value="";
 }
 
 /* INIT */
@@ -117,5 +101,4 @@ getSensor();
 getActivities();
 
 setInterval(getSensor,3000);
-setInterval(getActivities,5000);
 </script>
